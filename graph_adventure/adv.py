@@ -35,7 +35,11 @@ for exit in player.currentRoom.getExits():
 for exit in player.currentRoom.getExits():
     nontraversed_directions.add(f'{player.currentRoom.id}{exit}')    
 
-
+def bfs_path(starting_vertex):
+    initial_room = starting_vertex
+    q = []
+    # starting queue with initial_room items
+    
 
 # TRAVERSAL TEST
 visited_rooms = set()
