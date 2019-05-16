@@ -26,14 +26,14 @@ traversalPath = []
 graph = {}
 nontraversed_directions = set()
 
-#instantiating first room in graph
-graph[player.currentRoom.id] = []
+# instantiating first room in graph
+graph[player.currentRoom.id] = {}
 for exit in player.currentRoom.getExits():
     graph[player.currentRoom.id][exit] = '?'
 
-#instantiating nontraversed directions in current room
+# instantiating nontraversed directions in current room
 for exit in player.currentRoom.getExits():
-    nontraversed_directions.add(f'{player.currentRoom.id}{exit}')    
+    nontraversed_directions.add(f'{player.currentRoom.id}{exit}')
 
 def bfs_path(starting_vertex):
     initial_room = starting_vertex
@@ -41,6 +41,21 @@ def bfs_path(starting_vertex):
     # starting queue with initial_room items
     for direction, room in graph[initial_room].items():
         q.append([[direction, room]])
+    while len(q) > 0:
+        path = q.pop(0)
+        v = path[-1]
+        # if '?' in current room, move player to that room and add to traversalPath
+        if '?' in graph[v[1]].values():
+            for direction, room in path:
+                player.travel(direction)
+                traversalPath.append(direction)
+            break
+        # continue search if no '?' in current room
+        else:
+            for direction, room in graph[v[1]].items():
+                if room != initial_room and room not in [room for direction, room in path]:
+                    new_path = list(path) + [[direction, room]]
+                    q.append(new_path)           
 
 # TRAVERSAL TEST
 visited_rooms = set()
