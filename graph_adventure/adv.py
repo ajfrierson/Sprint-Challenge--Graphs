@@ -57,6 +57,16 @@ def bfs_path(starting_vertex):
                     new_path = list(path) + [[direction, room]]
                     q.append(new_path)           
 
+def oppisite_direction(direction):
+    if direction == 'n':
+        return 's'
+    if direction == 's':
+        return 'n'
+    if direction == 'w':
+        return 'e'
+    if direction == 'e':
+        return 'w'    
+
 # TRAVERSAL TEST
 visited_rooms = set()
 player.currentRoom = world.startingRoom
