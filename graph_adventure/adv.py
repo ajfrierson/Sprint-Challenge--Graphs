@@ -68,18 +68,37 @@ def oppisite_direction(direction):
     if direction == 'e':
         return 'w'    
 
-def player_travel():
-    while nontraversed_directions:
-        print(player.currentRoom.id)
-        # pursue the current room if it has unknown exits
-        if '?' in graph[player.currentRoom.id].values():
-            next_direction = None
-            initial_room = player.currentRoom.id
-            # planning next_direction based on which exit is unknown
-            for exit in graph[initial_room]:
-                next_direction = exits
-                break
+  # take out the next move we'll make from nontraversed_directions
+            nontraversed_directions.remove(f'{initial_room}{next_direction}')
+            # move player and add to traversalPath
+            player.travel(next_direction)
+            traversalPath.append(next_direction)
+            new_room = player.currentRoom.id
+            # if new_room not in graph then make it so with exits!
+            if new_room not in graph:
+                graph[player.currentRoom.id] = {}
+                for exit in player.currentRoom.getExits():
+                    graph[player.currentRoom.id][exit] = '?'
+            # update graph for both rooms
+            graph[initial_room][next_direction] = new_room
+            graph[new_room][opposite_direction(next_direction)] = initial_room
+            # add new unknown exits to nontraversed_directions
+            for direction, room in graph[new_room].items():
+                if room == '?':
+                    nontraversed_directions.add(f'{new_room}{direction}')
+            # removing backtrack if exists
+            if f'{new_room}{opposite_direction(next_direction)}' in nontraversed_directions:
+                nontraversed_directions.remove(f'{new_room}{opposite_direction(next_direction)}')
+        # do bfs to find nearest room with unknown exits
+        else:
+            bfs_path(player.currentRoom.id)
 
+
+player_travel()
+
+
+
+            
 # TRAVERSAL TEST
 visited_rooms = set()
 player.currentRoom = world.startingRoom
